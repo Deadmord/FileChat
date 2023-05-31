@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileChatServer", "FileChatServer\FileChatServer.vcxproj", "{53429B38-6C6E-4880-B559-C8C3C9D393A2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileChatClient", "FileChatClient\FileChatClient.vcxproj", "{668363BC-43B3-4D04-A3FB-59E5A0D7AE97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53429B38-6C6E-4880-B559-C8C3C9D393A2}.Debug|x64.ActiveCfg = Debug|x64
+		{53429B38-6C6E-4880-B559-C8C3C9D393A2}.Debug|x64.Build.0 = Debug|x64
+		{53429B38-6C6E-4880-B559-C8C3C9D393A2}.Release|x64.ActiveCfg = Release|x64
+		{53429B38-6C6E-4880-B559-C8C3C9D393A2}.Release|x64.Build.0 = Release|x64
+		{668363BC-43B3-4D04-A3FB-59E5A0D7AE97}.Debug|x64.ActiveCfg = Debug|x64
+		{668363BC-43B3-4D04-A3FB-59E5A0D7AE97}.Debug|x64.Build.0 = Debug|x64
+		{668363BC-43B3-4D04-A3FB-59E5A0D7AE97}.Release|x64.ActiveCfg = Release|x64
+		{668363BC-43B3-4D04-A3FB-59E5A0D7AE97}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E71638C-1EA0-45E7-B52F-5A4008394BCD}
+	EndGlobalSection
+EndGlobal
