@@ -3,6 +3,8 @@
 #include <QCoreApplication>  
 #include <QSettings>
 
+#define SETTINGS_FILE "config"
+
 config::config(QObject *parent)
 	: QObject(parent)
 {}
@@ -10,18 +12,27 @@ config::config(QObject *parent)
 config::~config()
 {}
 
-void config::openSettingsfile(const QString& organization, const QString& application)
+void config::openSettingsfile(const QString& organization, const QString& application, const QString& directory)
 {
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, organization, application);
+    QString filePath = QDir(directory).filePath(QString("%1.ini").arg(SETTINGS_FILE));
+    QSettings settings(filePath, QSettings::IniFormat, new QObject());
+
     const QString p = settings.fileName();
     QProcess::startDetached("notepad.exe", QStringList() << settings.fileName());
 
 }
 
-QString config::saveSettings(const QString& organization, const QString& application, const QMap<QString, QVariant>& parameters, bool useIniFile)
+QString config::saveSettings(const QString& organization, const QString& application, const QMap<QString, QVariant>& parameters, const QString& directory, bool useIniFile)
 {
     QSettings::Format format = useIniFile ? QSettings::IniFormat : QSettings::NativeFormat;
-    QSettings settings(format, QSettings::UserScope, organization, application);
+    //QString filePath = QDir(directory).filePath(QString("%1.ini").arg(application));
+    QString filePath = QDir(directory).filePath(QString("%1.ini").arg(SETTINGS_FILE));
+    //QSettings settings(format, QSettings::UserScope, organization, application);
+    //QSettings settings(format, QSettings::UserScope, organization, application, new QObject());
+    //QSettings settings(QSettings::UserScope, new QObject());      //save in registr
+    QSettings settings(filePath, QSettings::IniFormat, new QObject());
+    //settings.setPath(QSettings::IniFormat, QSettings::UserScope, filePath);
+
 
     QMapIterator<QString, QVariant> it(parameters);
     while (it.hasNext()) 
@@ -49,10 +60,11 @@ QString config::saveSettings(const QString& organization, const QString& applica
     return settings.fileName();
 }
 
-void config::loadSettings(const QString& organization, const QString& application, QMap<QString, QVariant>& parameters, bool useIniFile)
+void config::loadSettings(const QString& organization, const QString& application, QMap<QString, QVariant>& parameters, const QString& directory, bool useIniFile)
 {
     QSettings::Format format = useIniFile ? QSettings::IniFormat : QSettings::NativeFormat;
-    QSettings settings(format, QSettings::UserScope, organization, application);
+    QString filePath = QDir(directory).filePath(QString("%1.ini").arg(SETTINGS_FILE));
+    QSettings settings(filePath, QSettings::IniFormat, new QObject());
 
     QStringList groups = settings.childGroups();
     foreach(const QString & group, groups) 

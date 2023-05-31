@@ -8,11 +8,11 @@ font settings::_userText;
 
 void settings::openSettingsfile()
 {
-    config::openSettingsfile(qApp->organizationName(), qApp->applicationName());
+    config::openSettingsfile(qApp->organizationName(), qApp->applicationName(), qApp->applicationDirPath());
 }
 
 void settings::saveSettings()
-{
+{   
     QMap<QString, QVariant> parameters;
     //parameters.insert("MainWindow.size", QSize(1024, 768));
     //parameters.insert("MainWindow.position", QPoint(200, 200));
@@ -27,42 +27,51 @@ void settings::saveSettings()
     parameters.insert("ServerSettings.name", QString("QT FileChat"));
     parameters.insert("ServerSettings.salutation", QString("Salutation from Settings"));
 
-    auto ini_path = config::saveSettings(qApp->organizationName(), qApp->applicationName(), parameters, true); // Saves settings using INI files 
+    auto ini_path = config::saveSettings(qApp->organizationName(), qApp->applicationName(), parameters, qApp->applicationDirPath(), true); // Saves settings using INI files 
+    qDebug() << "Settings saved in: " << ini_path;
 }
 
 void settings::loadSettings()
 {
     QMap<QString, QVariant> parameters;
 
-    config::loadSettings(qApp->organizationName(), qApp->applicationName(), parameters, true); // Loads settings using INI files 
+    config::loadSettings(qApp->organizationName(), qApp->applicationName(), parameters, qApp->applicationDirPath(), true); // Loads settings using INI files 
 
-    QMapIterator<QString, QVariant> it(parameters);
-    while (it.hasNext()) {
-        it.next();
-        qDebug() << it.key() << ": " << it.value();
+    if (parameters.size())
+    {
+        QMapIterator<QString, QVariant> it(parameters);
+        while (it.hasNext()) {
+            it.next();
+            qDebug() << it.key() << ": " << it.value();
+        }
+
+        //if (parameters.contains("DefaultText.textAttribute") && parameters.value("DefaultText.textAttribute").isValid())
+        //    defaultText.textAttribut = parameters.value("DefaultText.textAttribute").toString();
+        if (const QVariant v = parameters["DefaultText.textAttribute"]; v.isValid() && v.type() == QVariant::String)
+            _defaultText.textAttribut = v.toString();
+        if (const QVariant v = parameters["DefaultText.textColor"]; v.isValid() && v.type() == QVariant::String)
+            _defaultText.textColor = v.toString();
+        if (const QVariant v = parameters["DefaultText.backgroundColors"]; v.isValid() && v.type() == QVariant::String)
+            _defaultText.bgColor = v.toString();
+        if (const QVariant v = parameters["UsersText.textAttribute"]; v.isValid() && v.type() == QVariant::String)
+            _userText.textAttribut = v.toString();
+        if (const QVariant v = parameters["UsersText.textColor"]; v.isValid() && v.type() == QVariant::String)
+            _userText.textColor = v.toString();
+        if (const QVariant v = parameters["UsersText.backgroundColors"]; v.isValid() && v.type() == QVariant::String)
+            _userText.bgColor = v.toString();
+
+        if (const QVariant v = parameters["ServerSettings.name"]; v.isValid() && v.type() == QVariant::String)
+            serverName_ = v.toString();
+        if (const QVariant v = parameters["ServerSettings.salutation"]; v.isValid() && v.type() == QVariant::String)
+            salutation_ = v.toString();
+
+        qDebug() << "Settings loaded.";
+        fontFormater::setFormat(_defaultText);
     }
-    
-    //if (parameters.contains("DefaultText.textAttribute") && parameters.value("DefaultText.textAttribute").isValid())
-    //    defaultText.textAttribut = parameters.value("DefaultText.textAttribute").toString();
-    if (const QVariant v = parameters["DefaultText.textAttribute"]; v.isValid() && v.type() == QVariant::String)
-        _defaultText.textAttribut = v.toString();
-    if (const QVariant v = parameters["DefaultText.textColor"]; v.isValid() && v.type() == QVariant::String)
-        _defaultText.textColor = v.toString();
-    if (const QVariant v = parameters["DefaultText.backgroundColors"]; v.isValid() && v.type() == QVariant::String)
-        _defaultText.bgColor = v.toString();
-    if (const QVariant v = parameters["UsersText.textAttribute"]; v.isValid() && v.type() == QVariant::String)
-        _userText.textAttribut = v.toString();
-    if (const QVariant v = parameters["UsersText.textColor"]; v.isValid() && v.type() == QVariant::String)
-        _userText.textColor = v.toString();
-    if (const QVariant v = parameters["UsersText.backgroundColors"]; v.isValid() && v.type() == QVariant::String)
-        _userText.bgColor = v.toString();
-
-    if (const QVariant v = parameters["ServerSettings.name"]; v.isValid() && v.type() == QVariant::String)
-        serverName_ = v.toString();
-    if (const QVariant v = parameters["ServerSettings.salutation"]; v.isValid() && v.type() == QVariant::String)
-        salutation_ = v.toString();
-    qDebug() << "Settings loaded.";
-    fontFormater::setFormat(_defaultText);
+    else
+    {
+        qDebug() << "Settings file not found or empty. tipe command \"/config default\" for reset to default";
+    }
 }
 
 QString settings::serverName() { return serverName_; }

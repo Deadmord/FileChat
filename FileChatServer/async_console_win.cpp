@@ -70,7 +70,7 @@ void asyncConsoleWin::processInputCommand(const QString& input)
     }
     else if (input == "/config default")
     {                                                   // save settings file 
-        qDebug() << "Command \"config save\" detected. Saved";
+        qDebug() << "Command \"config default\" detected. Saved";
         settings::saveSettings();
     }
     else if (input == "/config load")

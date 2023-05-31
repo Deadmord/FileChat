@@ -2,6 +2,7 @@
 #include <QTimer> 
 #include "modules/arg_parser.h"
 #include "modules/fontFormater.h"
+#include "ChatDirController.h"
 
 #if defined (Q_OS_WIN)
 #include "async_console_win.h"
@@ -9,11 +10,11 @@
 
 #endif
 
-
 int gl_exit_timeout = 3000; // 3 sec
 QString gl_serverName = "Default global name";
 QString gl_salutation = "Hello World";
 QString gl_arg_check_error = "";
+ChatDirController chatDirController;
 
 static void shutdown_routine()
 {
@@ -37,7 +38,6 @@ static void startup_routine()
         }
     );
 
-
     // check command line arguments
     auto const success = argParser::instance().parse(qApp->arguments(), gl_arg_check_error);
     if (!success)
@@ -47,12 +47,13 @@ static void startup_routine()
         QTimer::singleShot(gl_exit_timeout, qApp, &QCoreApplication::quit);
         return;
     }
-
     gl_exit_timeout = argParser::instance().exit_timeout();
     gl_salutation = argParser::instance().salutation();
 
+
+
     // register some meta types
-    //qRegisterMetaType<MyClasses::MyClass1>();
+    qRegisterMetaType<ChatDirController>();
 
     fontFormater::setFormat({ "blink_on", "white", "green" });
     qDebug() << "----------------------------------------------------";
@@ -68,9 +69,16 @@ static void startup_routine()
     new ConsoleAppMac(qApp);
 #endif
 
-    qDebug() << "Load settings: ";
     QTimer::singleShot(0, [&]()
         {
+            qDebug() << "Initiate common directory: ";
+            chatDirController.initDir();
+        });
+
+    
+    QTimer::singleShot(0, [&]()
+        {
+            qDebug() << "Load settings: ";
             settings::loadSettings();
             gl_serverName = settings::serverName();
             gl_salutation = settings::salutation();
