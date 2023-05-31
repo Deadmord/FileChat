@@ -58,7 +58,7 @@ static void startup_routine()
     fontFormater::setFormat({ "blink_on", "white", "green" });
     qDebug() << "----------------------------------------------------";
     qDebug() << qApp->organizationName() << "                                    ";
-    qDebug() << "FileChat server is started." << "                        ";
+    qDebug() << "FileChat server starting..." << "                        ";
     qDebug() << "Salutation : " << gl_salutation << "                  "; // this salutation we get from command line
     qDebug() << "----------------------------------------------------";
     fontFormater::clear();
@@ -71,19 +71,17 @@ static void startup_routine()
 
     QTimer::singleShot(0, [&]()
         {
-            qDebug() << "Initiate common directory: ";
-            chatDirController.initDir();
-        });
+            chatDirController.initDir();        // Initialize and start server
 
-    
-    QTimer::singleShot(0, [&]()
-        {
-            qDebug() << "Load settings: ";
-            settings::loadSettings();
+            fontFormater::setFormat({ "bold_on", "light_green", "default" });
+            qDebug() << "----------------------------------------------------";
             gl_serverName = settings::serverName();
             gl_salutation = settings::salutation();
             qDebug() << "ServerName : " << gl_serverName;
             qDebug() << "Salutation : " << gl_salutation;
+            qDebug() << "----------------------------------------------------";
+            fontFormater::setFormat(settings::defaultText());
+
             QTimer::singleShot(100, []() { qDebug() << "Enter text or command, type command \"/quit\" to quit..."; });
         });
 }

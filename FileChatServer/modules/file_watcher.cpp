@@ -104,6 +104,27 @@ QStringList file_watcher::find_all_file_2(const QString& root_path, const QStrin
     return out;
 }
 
+QStringList file_watcher::find_all_file_3(const QString& root_path, const QString& ext)
+{
+    QStringList out;
+    out << root_path;
+    QDir dir(root_path);
+    dir.setNameFilters(QStringList{} << ext);
+
+    QStringList entries = dir.entryList(QDir::Files | QDir::AllDirs | QDir::Dirs | QDir::NoDotAndDotDot );
+
+    for (const QString& entry : entries)
+    {
+        auto const path = dir.absoluteFilePath(entry);
+        out << path;
+        if (QFileInfo file_info(path); file_info.isDir())
+        {
+            out << find_all_file_2(file_info.absoluteFilePath(), ext);
+        }
+    }
+    return out;
+}
+
 QStringList file_watcher::find_all_folders(const QString& root_path)
 {
     QStringList out;
@@ -140,7 +161,7 @@ void file_watcher::start_folder_watcher(const QString& folder_path)
         }
     };
 
-    auto const& watched_list = find_all_file_2(folder_path, "*.*");
+    auto const& watched_list = find_all_file_3(folder_path, "*.*");
     watcher.addPaths(watched_list);
 	
     connect(&watcher, &QFileSystemWatcher::fileChanged, [this](const QString& path)

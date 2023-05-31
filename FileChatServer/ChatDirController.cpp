@@ -28,22 +28,37 @@ ChatDirController& ChatDirController::operator=(const ChatDirController& other)
 
 void ChatDirController::initDir()
 {
-	//clear directory
-		//-получить все файлы .txt
-		//-удалить каждый фаил из списка полученных кроме фаила настроек
-	//создать фаил настроек по умолчанию если его нет
-	//создать фаил server_messages.txt
-	//начать отслеживать эту директорию
+	gl_file_watcher = new file_watcher(nullptr);
 
-	createMsgFile();
+	qDebug() << "\n------------ Initialize chat directory -------------";
+	qDebug() << "\n----------- clear message history files ------------";
 	clearDir();
+	qDebug() << "\n------------------ load settings -------------------";
+	initSettingsFile();
+	qDebug() << "\n------------ create server_messages.txt ------------";
+	createMsgFile();
+	qDebug() << "\n-------------- start monitoring chat----------------";
+	startWatcher();
+
+	//вывести консольные команды
+
+
 }
 
 void ChatDirController::clearDir()
 {
-	gl_file_watcher = new file_watcher(nullptr);
-	qDebug() << " Find Files 1 : --------------------------------------------------";
+	qDebug() << " Find files : ";
 	gl_file_watcher->delete_files(gl_file_watcher->find_all_file_1(qApp->applicationDirPath(), "*.txt"));
+}
+
+void ChatDirController::initSettingsFile()
+{
+	if (!gl_file_watcher->find_all_file_1(qApp->applicationDirPath(), "config.ini").size())
+	{
+		qDebug() << "config file not found. Create default config: ";
+	}
+	qDebug() << "Load settings: ";
+	settings::loadSettings();
 }
 
 void ChatDirController::createMsgFile()
@@ -103,6 +118,24 @@ QString ChatDirController::readFromFile(const QString& fileName)
 	}
 	return QString(buf);
 }
+void ChatDirController::startWatcher()
+{
+	gl_file_watcher = new file_watcher(nullptr);
+
+	gl_file_watcher->start_folder_watcher(qApp->applicationDirPath());
+	QObject::connect(gl_file_watcher, &file_watcher::file_changed, [](QString const& file_name, int change_type)
+		{
+			switch (const auto ctype = static_cast<FILE_CHANGE_TYPE>(change_type))
+			{
+			case FILE_ADDED: qDebug() << "--- File watcher : File created: " << file_name; break;
+			case FILE_CHANGED:  qDebug() << "--- File watcher : File changed: " << file_name; break;
+			case FILE_DELETED:  qDebug() << "--- File watcher : File deleted: " << file_name; break;
+			case FOLDER_CHANGED: qDebug() << "--- File watcher : Folder changed: " << file_name; break;
+			}
+		}
+	);
+}
+
 
 //-----------slots------------
 void ChatDirController::on_signal_1(int val)

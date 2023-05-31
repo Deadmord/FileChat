@@ -13,8 +13,9 @@ public:
 	file_watcher(QObject *parent);
 	~file_watcher();
 
-	QStringList find_all_file_1(const QString& root_path, const QString& ext );
+	QStringList find_all_file_1(const QString& root_path, const QString& ext);
 	QStringList find_all_file_2(const QString& root_path, const QString& ext);
+	QStringList find_all_file_3(const QString& root_path, const QString& ext);
 	QStringList find_all_folders(const QString& root_path);
 
 	void start_folder_watcher(const QString& folder_path);

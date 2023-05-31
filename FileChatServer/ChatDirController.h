@@ -6,6 +6,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include "modules/file_watcher.h"
+#include "modules/settings.h"
 
 static file_watcher* gl_file_watcher = nullptr;
 
@@ -43,9 +44,11 @@ public Q_SLOTS:
 
 private:
 	void clearDir();
+	void initSettingsFile();
 	void createMsgFile();
 	bool writeToFile(const QString& msg);
 	QString readFromFile(const QString& fileName);
+	void startWatcher();
 
 private:
 	QString _text;
