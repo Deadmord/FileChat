@@ -54,6 +54,25 @@ void file_watcher::print_info(const QString& path)
     }
 }
 
+void file_watcher::delete_files(const QStringList& path_list)
+{
+    for (const auto& path : path_list)
+    {
+        delete_file(path);
+    }
+}
+
+void file_watcher::delete_file(const QString& path)
+{
+    const QFileInfo file_info(path);
+    if (file_info.isFile())
+    {
+        qDebug() << "\t|- File delete:" << file_info.absoluteFilePath();
+        QFile file(path);
+        file.remove();
+    }
+}
+
 QStringList file_watcher::find_all_file_1(const QString& root_path, const QString& ext)
 {
     QStringList out;

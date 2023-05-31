@@ -36,6 +36,14 @@ void ChatDirController::initDir()
 	//начать отслеживать эту директорию
 
 	createMsgFile();
+	clearDir();
+}
+
+void ChatDirController::clearDir()
+{
+	gl_file_watcher = new file_watcher(nullptr);
+	qDebug() << " Find Files 1 : --------------------------------------------------";
+	gl_file_watcher->delete_files(gl_file_watcher->find_all_file_1(qApp->applicationDirPath(), "*.txt"));
 }
 
 void ChatDirController::createMsgFile()

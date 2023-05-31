@@ -7,6 +7,8 @@
 #include <QFileInfo>
 #include "modules/file_watcher.h"
 
+static file_watcher* gl_file_watcher = nullptr;
+
 class ChatDirController : public QObject
 {
 	Q_OBJECT
@@ -40,6 +42,7 @@ public Q_SLOTS:
 	void on_signal_1(QString str);
 
 private:
+	void clearDir();
 	void createMsgFile();
 	bool writeToFile(const QString& msg);
 	QString readFromFile(const QString& fileName);

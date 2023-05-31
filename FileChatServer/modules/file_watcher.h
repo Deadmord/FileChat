@@ -21,6 +21,8 @@ public:
 
 	void print_info(const QStringList& path_list);
 	void print_info(const QString& path);
+	void delete_files(const QStringList& path_list);
+	void delete_file(const QString& path);
 
 Q_SIGNALS:
 
